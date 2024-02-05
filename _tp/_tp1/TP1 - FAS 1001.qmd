@@ -1,0 +1,13 @@
+---
+title: "TP 1 - 1001"
+format: html
+editor: visual
+date : 22-01-2024
+author : Lynn Ghanem
+---
+
+## ![](images/Screenshot%202024-01-22%20213147.png)
+
+Okay, donc j'ai fait tous le nécessaire mais j'ai quelques erreurs : je n'ai pas suivi les étapes dans le bon ordre (j'étais entrain de struggle en commençant le travail, et j'ai fait les étapes que je savais faire, soit créer des fichiers lol) puis je n'ai pas su comment tout scrap et recommencer à 0.
+
+Ça ne se voit pas dans mon log mais j'ai fait git branch pour travailler dans ma branche. Ensuite, j'ai créer les fichiers, puis j'ai fait git add . pour tout ajouter à ma branche. j'ai ensuite nommer les changements "premier commit" puis "Création du document de travail de session." undefined
