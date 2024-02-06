@@ -1,0 +1,77 @@
+---
+title: "TP 2"
+format: html
+editor: visual
+---
+
+# L'impact du PIB sur la satisfaction des individus (Option 1)
+
+## Introduction
+
+La richesse d'un pays le rend-il véritablement plus heureux? La pauvreté est souvent désignée comme un des facteurs les plus déterminants du malheur. Plusieurs études montrent qu'il existe une corrélation positive entre le PIB et le taux de satisfaction au sein de la population, surtout au niveau des pays en développement qui vivent des croissances plus prononcées (Proto et Rustichini 2013).
+
+L'étude suivante cherche à examiner le lien entre le PIB et le taux de satisfaction que les individus ont à l'égard de leurs vies au Canada. Les données utilisées sont tirées de Statistiques Canada. Aux fins de l'étude, les données de Statistiques Canada sur le Produit Intérieur Brut du pays seront croisées avec les résultats sur la satisfaction de vie de la Canadian Community Health Survey. Le croisement de ses donneés nous permettra de comparer l'évolution du PIB à celle de la satisfaction générale de la population entre 2015 et 2022.
+
+## Données et méthodes
+
+Deux types de données sont donc utilisées dans ce travail : le PIB, une donnée économique, et la satisfaction à l'égard de la vie, une donnée qualitative tirée d'un sondage conduit par le gouvernement fédéral canadien dans le cadre d'une enquête sur la santé dans les collectivités canadiennes. Le PIB est mesuré en dollars. La satisfaction est mesurée selon une échelle allant de "pas satisfait du tout" (0) à "très satisfait." (10) Les données utilisées dans ce travail se limitent au pourcentage de personnes ayant répondu "satisfait" ou 'très satisfait" à chaque année entre 2015 à 2022.
+
+Les données étant plus ou moins désordonnées, un travail de nettoyage à été fait pour les rendre analysables. Pour les données sur la satisfaction, j'ai enlevé toutes les lignes et colonnes qui ne me seraient pas utiles, comme le nombre brut de répondants et les répétitions. J'ai également renommé la colonne REF_DATE à "Date" pour que les données soient compatibles avec celles du PIB. Pour celles-ci, j'ai filtré les colonnes pour ne garder que le PIB total et non son *breakdown* en différentes catégories. Ensuite, j'ai enlevé la colonne vide avant d'utiliser la commande pivot_longer pour pouvoir mettre les dates dans l'ordre suivi par la même colonne dans la première base de données.
+
+Enfin, j'ai combiné les deux bases de données en fonction de leur variable commune, la date, pour pouvoir créer un graphe dépeignant le résultat de ma question de recherche.
+
+## Résultats
+
+![](graphique.png)
+
+Le graphique montre qu'il existe une corrélation négative, quoique semblablement faible, entre le PIB et la satisfaction. En effet, on voit sur le graphe que le PIB le plus élevé est associé au taux de satisfaction le plus faible.
+
+Il existe, évidemment, d'autres facteurs qui affectent le PIB et la satisfaction des individus. Au cours des dernières années, plusieurs évènements, dont la pandémie de la COVID-19 et la récession entrainée par celle-ci, ont sans doute réduit la satisfaction que les individus ressentaient par rapport à leurs vies.
+
+Ces résultats étant plus ou moins contre-intuitifs, plusieurs questions se posent. Il faudrait d'abord aborder les limites de ce travail. Les données obtenues à partir du site public de Statistiques Canada sont très limitées, notamment dans le temps : l'information sur la satisfaction de vie ne remonte pas plus loin que 2015, ce qui limite les possibilités de trouver des résultats statistiquement significatifs. Ensuite, le PIB national, et non par habitant, est loin d'être le meilleur indicateur du niveau de vie des individus. Le Produit Intérieur Brut comprend lui-même des limites, connues de tous les étudiants en science politique ou économie : par exemple, il ne prend pas en considération les conditions de production (facteur qui affecte certainement la satisfaction des individus!). De plus, la notion de satisfaction est subjective, chose qui n'est pas reflétée par le sondage dont les données ont été tirées. Le concept de satisfaction varie de culture en culture et même de ménage en ménage. Il serait donc difficile de tirer des généralisations d'une étude pareille.
+
+## Bibliographie
+
+Proto E, Rustichini A. 2013. "A Reassessment of the Relationship between GDP and Life Satisfaction." *PLoS ONE* 8(11): e79358. https://doi.org/10.1371/journal.pone.0079358
+
+Statistics Canada. Table 36-10-0434-03  Gross domestic product (GDP) at basic prices, by industry, annual average (x 1,000,000).[https://doi.org/10.25318/3610043401-eng](#0)
+
+Statistics Canada. [Table 13-10-0096-05  Life satisfaction, satisfied or very satisfied, by age group](https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1310009605). <https://doi.org/10.25318/1310009601-eng>
+
+## Annexe
+
+### Code utilisé
+
+```{r}
+library(readr)
+library(tidyverse)
+
+#Importation des données
+
+Satisfaction_population <- read_csv("LifeSatisfactionFull.csv")
+Données_PIB <- read.csv("GDP 2015 to 2022.csv")
+
+#Nettoyage des données sur la satisfaction
+
+Satisfaction_population_cleaned <- Satisfaction_population %>% filter(Characteristics == "Percent", grepl('Total', `Age group`)) %>% select(REF_DATE, GEO, `Age group`, Sex, Indicators, Characteristics, VALUE) %>% rename("Date" = REF_DATE)
+
+#Nettoyage des données sur le PIB
+
+Données_PIB_cleaned <- Données_PIB %>% filter(Seasonal.adjustment == "All industries") %>% rename("GDP Total" = Seasonal.adjustment) %>% select(-"Colonne1") %>% pivot_longer(cols = everything(), names_to = "Date", values_to = "Yearly GDP")
+
+Données_PIB_cleaned$Date <- sub("^X", "", Données_PIB_cleaned$Date)
+
+#Unification des données
+
+Merged_Data <- merge(Données_PIB_cleaned, Satisfaction_population_cleaned, by = "Date")
+
+#Graphique
+
+graphique <- ggplot(Merged_Data) +
+ aes(x = `Yearly GDP`, y = VALUE) +
+ geom_point(shape = "circle", size = 1.5, colour = "#112446") +
+ theme_minimal() + labs(title = "Lien entre le PIB et la satisfaction à l'égard de la vie", y = "Satisfaction (%)", x = "PIB" )
+
+graphique
+ggsave("graphique.png")
+```
