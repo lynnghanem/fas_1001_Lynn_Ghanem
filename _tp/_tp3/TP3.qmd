@@ -1,0 +1,108 @@
+---
+title: "TP 3"
+format: html
+editor: visual
+---
+
+# Le commerce versus la société : les sujets les plus récurrents durant les discours de parlementaires au Canada le 3 juin 2019.
+
+## Introduction
+
+Les discours parlementaires, quoique rarement écoutés ou étudiés, peuvent toutefois être source d'information pertinentes à la compréhension du fonctionnement politique d'un pays et des valeurs du gouvernement élu. Le travail suivant constitue une analyse exploratoire des discours prononcés le 3 juin 2019 au parlement du Canada. Les données ont été extraites du "Canadian Hansard dataset" du site Lipad. L'analyse suivante se concentre particulièrement sur les enjeux liées au commerce et ceux liées à la société.
+
+## Les données utilisées
+
+Les données analysées dans ce travail résument tous les discours parlementaires ayant eu lieu au Canada le 3 juin 2019. La technique d'analyse utilisée est celle du stemming et des stopwords. Dans mon code (voir Annexe 1), je crée un dictionnaire des mots que je cherche à trouver dans les textes. Les données étant en anglais, le dictionnaire l'est aussi. Chaque catégorie du dictionnaire contient dix mots. Pour l'aspect "commerce" j'ai défini les mots business, accounts, trade, affairs, corporate, work, industry, profits, economy, entrepreneurship. Pour l'aspect "société," j'ai choisi des mots associées à plusieurs enjeux sociétaux. dont les droits des personnes autochtones, la sécurité, etc. La nature de ma recherche étant exploratoire et la quantité de données étant limitées, j'ai trouvé que ce serait le chemin le plus intéressant et efficace à prendre pour trouver des informations spécifiques.
+
+## Résultats
+
+On voit clairement dans le graphique ci-dessous que les mots liés au commerce ont été discuté approximativement 2.1 fois plus que ceux liés à la société.
+
+![](plot.png)
+
+## Conclusion
+
+Ces résultats posent plusieurs questions en ce qui concerne les priorités du gouvernement. Ce travail ne couvrant qu'un seul jour, il serait maladroit de tirer des conclusions définitves ou généralisables - mais il s'agit quand même d'un sujet intéressant. À partir de cette étude, je peux penser à plusieurs questions de recherche qui pourrait être étudiée pour définir des tendances dans les discours parlementaires au Canada au fil des années.
+
+## Annexe 1
+
+```{r}
+library(readr)
+library(tidyverse)
+database_tp3 <- read_csv("database_tp3.csv")
+```
+
+```{r}
+library(quanteda)
+library(tictoc)
+```
+
+```{r}
+dictionnaire <- list(commerce = c('business', 'accounts', 'trade', 'affairs', 'corporate', 'work', 'industry', 'profits', 'economy', 'entrepreneurship'), societe = c('indigenous', 'safety', 'minority', 'immigration', 'justice', 'poverty', 'health', 'society', 'human rights')) %>% dictionary()
+```
+
+```{r}
+Dat_clean <- database_tp3 |> 
+  select(speechtext, speakerparty) |> 
+  mutate(speechtext = tolower(speechtext)) |> 
+  na.omit()
+```
+
+```{r}
+run_dictionary <- function(data, text, dictionary) {
+  tictoc::tic()
+  if ( is.data.frame(data) != "TRUE") {
+    stop(crayon::yellow('the argument "data" needs to be a dataframe'))
+  }
+  data <- data %>% dplyr::mutate(text = {{text}})
+  if ( is.character(data$text) != "TRUE") {
+    stop(crayon::yellow('The variable "text" needs to be a character vector'))
+  }
+  corpus <- quanteda::tokens(data$text)
+  if ( quanteda::is.dictionary(dictionary) != "TRUE") {
+    stop(crayon::yellow('Your "dictionary" needs to be in a dictionary format\n For more information:" https://quanteda.io/reference/dictionary.html'))
+  }
+  dfm    <- quanteda::dfm(quanteda::tokens_lookup(corpus, dictionary, nested_scope = "dictionary"))
+  message(crayon::green("100% expressions/words found"))
+  dataFinal   <- quanteda::convert(dfm, to = "data.frame")
+  tictoc::toc()
+  return(dataFinal)
+}
+```
+
+```{r}
+analyse_dictionnaire <- run_dictionary(data = Dat_clean, text = speechtext, dictionary = dictionnaire)
+
+```
+
+```{r}
+analyse_dictionnaire_clean <- analyse_dictionnaire %>% select('commerce', 'societe')
+
+col_sums <- colSums(analyse_dictionnaire_clean) %>% tibble()
+
+bind_rows(analyse_dictionnaire_clean, col_sums)
+
+
+# ok je n'arrive pas  àmettre les totaux dans le même dataframe 
+# et je suis très fatiguée 
+# je vais le faire manuellement
+```
+
+```{r}
+
+analyse_dictionnaire_g <- data.frame(commerce = c(271), société = c(128))
+
+
+df_long <- tidyr::pivot_longer(analyse_dictionnaire_g, everything(), names_to = "Category", values_to = "Value")
+
+
+plot2 <- ggplot(df_long, aes(x = Category, y = Value, fill = Category)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Enjeux discutés au parlement canadien le 3 juin 2019", x = "Enjeu", y = "Nombre de mots liés à l'enjeu") +
+  theme_minimal() +
+  geom_text(aes(label = Value), vjust = -0.5, color = "black", size = 3)
+
+ggsave("plot.png", plot2)
+
+plot2
+```
