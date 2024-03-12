@@ -1,0 +1,36 @@
+---
+title: "Plan de recherche"
+format: html
+editor: visual
+bibliography: references.bib
+---
+
+## L'impact du PIB par habitant annuel sur la satisfaction reportée des individus à l'égard de leurs vies. 
+
+### Question de recherche 
+
+La richesse d'un pays le rend-il véritablement plus heureux? La pauvreté est souvent désignée comme un des facteurs les plus déterminants de la dissatisfaction populaire. Plusieurs études montrent qu'il existe une corrélation positive entre le PIB par habitant et le taux de satisfaction au sein de la population, surtout au niveau des pays en développement qui vivent des croissances plus prononcées (Proto et Rustichini 2013). Il est cependant souvent considéré erroné d'utiliser, de manière générale, le PIB comme indicateur de satisfaction. L'indicateur développé pour obtenir plus de précision sur le niveau de satisfaction d'une population est l'IDH, ou Indice de Développement Humain. Celui-ci comprend trois composantes : le revenu, la santé et l'éducation. Une étude de Yin et. al (2021) montre que le revenu détient la plus grande capacité prédictive des trois; cette même étude infère également que les trois composantes de l'IDH ne sont qu'également pondéré dans les pays occidentaux (Yin et. al 2021). Ces résultats rejoignent ceux de l'étude de Guisan (2021), qui conclut que la satisfaction est liée au développement économique, qui est lui-même lié à la qualité de gouvernance et au maintien de la paix.
+
+L'étude suivante cherche à examiner le lien entre le PIB par habitant et le taux de satisfaction que les individus reportent à l'égard de leurs vies au Canada. Les données utilisées sont tirées de Statistiques Canada. Aux fins de l'étude, les données de Statistiques Canada sur le Produit Intérieur Brut par habitant du pays seront croisées avec les résultats sur la satisfaction de vie de la Canadian Community Health Survey. Le croisement de ses donneés nous permettra de comparer l'évolution du PIB à celle de la satisfaction générale de la population entre 2015 et 2022. En se basant sur les conclusions de Yin et. al (2021) et de Guisan (2021) les hypothèses de cette recherche sont les suivantes :
+
+*Hypothèse 1 : l'augmentation du PIB par habitant est positivement corrélée à l'augmentation du taux de satisfaction reporté par les individus à l'égard de leur propre vie*
+
+*Hypothèse 2 : le PIB par habitant à lui seul ne constitue pas un indicateur complet de la satisfaction populaire.*
+
+### Données
+
+Deux types de données sont donc utilisées dans ce travail : le PIB par habitant, une donnée économique, et la satisfaction à l'égard de la vie, une donnée quantitative tirée d'un sondage conduit par le gouvernement fédéral canadien dans le cadre d'une enquête sur la santé dans les collectivités canadiennes. Le PIB est mesuré en dollars. La satisfaction est mesurée selon une échelle allant de "pas satisfait du tout" (0) à "très satisfait." (10) Les données utilisées dans ce travail se limitent au pourcentage de personnes ayant répondu "satisfait" ou 'très satisfait" à chaque année entre 2015 à 2022.
+
+Le PIB par habitant est calculé en divisant le PIB national par la population totale du pays. Il ne s'agit pas d'une base de données existante. L'étude suivante compte donc faire ce travail manuellement pour créer une base contenant le PIB par habitant à chaque année entre 2015 et 2022.
+
+### Méthode de recherche 
+
+Les données étant plus ou moins désordonnées, un travail de nettoyage devra être fait pour les rendre analysables. Pour les données sur la satisfaction, j'ai déjà, dans un travail précédent, enlevé toutes les lignes et colonnes qui ne me seraient pas utiles, comme le nombre brut de répondants et les répétitions. J'ai également renommé la colonne REF_DATE à "Date.". En ce qui concerne les données sur le PIB par habitant, j'ai l'intention de le calculer moi-même à partir d'une base de données contenaant le PIB national et d'une autre contenant la population totale du pays. Enfin, je combinerais les deux bases de données finales en fonction de leur variable commune, la date, pour pouvoir créer un ou plusieurs graphes dépeignant le ou les résultats de ma question de recherche.
+
+### Bibliographie 
+
+[@yin2021]
+
+Guisan, M. C. (2021). World development for 1995-2020: econometric relationships of human capital, development, quality of government and life satisfaction in 164 countries. *Applied Econometrics and International Development*, *21*(2), 83-112.
+
+[@proto2013]
