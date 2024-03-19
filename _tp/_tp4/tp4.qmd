@@ -1,0 +1,85 @@
+---
+title: "TP 4"
+format: html
+editor: visual
+---
+
+## Webscraping de la page wikipedia du Produit Intérieur Brut
+
+### Pourquoi cette page?
+
+Ma recherche porte sur le lien entre le PIB par habitant et la satisfaction reportées par les individus à l'égard de leurs vies. J'ai donc choisi de *scraper* la page wikipédia pour "Produit Intérieur Brut," puisqu'elle contient des informations intéressantes que je pourrais plus tard croisé avec des données sur la satisfaction populaire.
+
+### Analyse
+
+Dans mon scraping de la page wikipedia dont il est question dans ce travail, je commence par importer son URL. Ensuite, j'utilise la fonction *read_html* du paquetage *rvest*. À l'aide du même paquetage, je crée ma première base de données, qui contient de l'information sur les 10 pays ayant les PIB nominaux les plus élevés et les 10 pays ayant les PIB à PPA (PPA - parité du pouvoir d'achat) les plus élevés.
+
+Par la suite, j'importe deux autres bases de données : les PIB nominaux par habitant de quelques pays et les PIB par habitant à PPA de 12 pays entre 2012 et 2021.
+
+Finalement, je sépare la première base de données (table_pib) en deux tableaux différents : un pour les PIB nominaux, et un autre pour les PIB à PPA.
+
+### Refléxion sur les aspects ethiques du webscraping 
+
+Étant donnée la nature publique et impersonnelle des données sur le PIB, je ne vois pas de réel enjeux éthiques au scraping de ces données. Selon moi, les données pertinentes au fonctionnement d'un État devraient être librement accessible à tous pour l'intérêt de la transparence. Je dirais même qu'il serait plus éthiquement ambigue de refuser de partager ces données.
+
+Je vois cependant comment le webscraping pourrait généralement être peu éthique. En ce qui concerne des données importées des réseaux sociaux, je dirais que les enjeux éthiques de la recherche s'appliquent. La valeur la plus importante de la recherche est le consentement. En *scrapant* des données de Twitter ou TikTok, même s'il s'agit d'informations venant de comptes publics, les individus ayant publiés l'information peuvent ne pas être nécéssairement d'accord avec l'utilisation de cette information dans un contexte différent.
+
+Comme pour toutes autres recherches, l'analyse de données comporte certains enjeux liées à la confidentialité de l'information.
+
+```{r}
+install.packages("rvest")
+
+library(rvest)
+library(tidyverse)
+```
+
+```{r}
+url <- "https://fr.wikipedia.org/wiki/Produit_int%C3%A9rieur_brut"
+
+page <- read_html(url)
+
+table_pib <- page %>%
+  html_node(xpath='//*[@id="mw-content-text"]/div[1]/table[1]') %>%
+  html_table()
+
+glimpse(table_pib)
+
+```
+
+```{r}
+
+page <- read_html(url)
+
+PIB_parhabitant <- page %>%
+  html_node(xpath='//*[@id="mw-content-text"]/div[1]/table[2]') %>%
+  html_table()
+
+PIB_parhabitant_PPA <- page %>%
+  html_node(xpath='//*[@id="mw-content-text"]/div[1]/table[3]') %>%
+  html_table()
+
+```
+
+```{r}
+cols1 <- 1:3  
+cols2 <- 5:7  
+
+pib_nominal <- table_pib[, cols1]
+pib_PPA <- table_pib[, cols2]
+```
+
+```{r}
+glimpse(PIB_parhabitant)
+```
+
+```{r}
+glimpse(pib_nominal)
+```
+
+```{r}
+glimpse(PIB_parhabitant_PPA)
+```
+
+```{r}
+glimpse(pib_PPA)
+```
